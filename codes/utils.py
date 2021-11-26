@@ -175,29 +175,27 @@ def circle(x, y, opponent, r=0.25):
     glPopMatrix()
 
 
-def draw_balloon(x, y, num=4):
-    '''
+def draw_balloon(x, y):
+	'''
     プロモーションのときの吹き出しを描画する
-
+    
     Parameters
-    ----------
-    x, y : int
-        駒の座標．
-    num : int, default 4
-        プロモーション選択肢数．
+	----------
+	x, y : int
+		駒の座標．
     '''
-    glColor(0.5, 0.5, 0.5)  # 色の指定
-    glBegin(GL_QUADS)       # 四角形を描画
-    glVertex(1.0, 2.5 - ((num - 1) // 4) / 2)
-    glVertex(1.0, 4.5 + ((num - 1) // 4) / 2)
-    glVertex(2.0 + num if num <= 4 else 6.0, 4.5 + ((num - 1) // 4) / 2)
-    glVertex(2.0 + num if num <= 4 else 6.0, 2.5 - ((num - 1) // 4) / 2)
-    glEnd()
-    glBegin(GL_TRIANGLES)   # 三角形を描画
-    glVertex(3.0, 3.5)
-    glVertex(4.0, 3.5)
-    glVertex(x, y)
-    glEnd()
+	glColor(0.5, 0.5, 0.5)  # 色の指定
+	glBegin(GL_QUADS)       # 四角形を描画
+	glVertex(-0.5, 2.5)
+	glVertex(-0.5, 4.5)
+	glVertex(7.5, 4.5)
+	glVertex(7.5, 2.5)
+	glEnd()
+	glBegin(GL_TRIANGLES)   # 三角形を描画
+	glVertex(3.0, 3.5)
+	glVertex(4.0, 3.5)
+	glVertex(x, y)
+	glEnd()
 
 
 def on_square(x, y, left, right, bottom, top):
@@ -217,45 +215,6 @@ def on_square(x, y, left, right, bottom, top):
 	'''
 	if left < x < right and bottom < y < top:
 		return True
-
-
-def draw_button(left, right, bottom, top,
-        letter, back_color=(1.00, 0.81, 0.62), font_color=(0.82, 0.55, 0.28)):
-    '''ボタンを描画する
-
-    Parameters
-    ----------
-    left, right, bottom, top : float
-        ボタンの左右下上端の座標．
-    letter : str
-        ボタン上に描画する文字．
-    back_color : tuple or list, default (1.00, 0.81, 0.62)
-        ボタンの色．
-    font_color : tuple or list, default (0.82, 0.55, 0.28)
-        文字の色．
-    '''
-    glColor(*back_color)
-    glBegin(GL_QUADS)
-    glVertex(left, bottom)
-    glVertex(left, top)
-    glVertex(right, top)
-    glVertex(right, bottom)
-    glEnd()
-    glColor(*font_color)
-    draw_str((left + right) / 2 - 0.1 * len(letter), (bottom + top) / 2, letter, gap=0.2)
-
-
-# ゲーム選択画面に表示するゲーム名
-game_name_dict = {0: ('Normal Chess', 'Chess 960', 'Unicorn')}
-
-
-def draw_game_menu():
-	'''ゲーム選択メニューを描画する'''
-	for i in range(2):
-		for j in range(5):
-			if i in game_name_dict and j < len(game_name_dict[i]):
-				draw_button(4.5*i - 0.5, 4.5*i + 3.0, 6.5 - 1.5*j, 7.5 - 1.5*j,
-                    game_name_dict[i][j])
 
 
 dark_squares_list = ([(i, j) for i in range(0, 8, 2) for j in range(0, 8, 2)]
@@ -300,14 +259,3 @@ def draw_available_moves(poslist, opponent=None):
     '''
     for pos in poslist:
         circle(*pos, opponent)
-
-
-def draw_castling_confirmation(endpos):
-    '''キャスリング確認ダイアログを表示する'''
-    draw_balloon(*endpos)
-    glColor(1.0, 1.0, 1.0)
-    draw_str(2.0, 4.0, 'Castling?')
-    draw_button(1.5, 3.0, 3.0, 3.5, 'Yes',
-                (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
-    draw_button(4.0, 5.5, 3.0, 3.5, 'No',
-                (1.0, 1.0, 1.0), (0.0, 0.0, 0.0))
