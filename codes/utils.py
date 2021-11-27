@@ -1,4 +1,5 @@
 from math import pi, sin, cos
+import os
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 
@@ -17,7 +18,7 @@ def set_img(name, path, imgID):
     imgID : int
             指定する画像ID．
     '''
-    img = Image.open(f'../img/{path}/{name}.png')   # 画像を読み込む
+    img = Image.open(f'C:/Users/willi/Desktop/projects/chess/img/{path}/{name}.png')   # 画像を読み込む
     w, h = img.size                                 # 画像の横幅、縦幅
     glBindTexture(GL_TEXTURE_2D, imgID)             # imgID のテクスチャを有効化する
 	# 画像とテクスチャを関連づける
