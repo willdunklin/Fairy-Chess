@@ -51,32 +51,22 @@ class Game:
 
         self.glmain()
 
-    def generate_army(self, pool,str):
-        army = []
-        for j in range(7):
-            army.append(random.choice(pool))
-        best_army = army
-        best_dist = sum([i.value() for i in best_army]) - str
-        
-        for i in range(999):
+    def generate_army(self, pool, str, var):
+        while True:
             army = []
-            for j in range(7):
-                army.append(random.choice(pool))
-                
-            dist = sum([i.value() for i in army]) - str
-            if -200 < dist and dist < 500:
-                best_army = army
+            for i in range(7):
+                army.append(random.choice(pool))   
+            total = sum([i.value() for i in army])
+            variance = sum([(i.value() - total/7)**2 for i in army])
+            print(total,variance)
+            if str[0] < total < str[1] and var[0] < variance < var[1]:
                 break
-            if abs(dist) < abs(best_dist):
-                best_army = army
-                best_dist = dist
-        best_army.insert(random.randrange(7),King)
-        
+        army.insert(random.randrange(7),King) 
         cb = []
         i = 0
-        while i < len(best_army):
-            if best_army[i] in colorbounded:
-                cb.append(best_army.pop(i))
+        while i < len(army):
+            if army[i] in colorbounded:
+                cb.append(army.pop(i))
             else:
                 i += 1
         all_placements = [[0,2,4,6],[1,3,5,7]]
@@ -88,16 +78,16 @@ class Game:
             used_placements.append(all_placements[i%2][i//2])
         used_placements.sort()
         for i in range(len(cb)):
-            best_army.insert(used_placements[i],cb[i])
-        return best_army
+            army.insert(used_placements[i],cb[i])
+        return army
 
     def place_pieces(self):
         for i in range(0, 8):
             self.gameboard[(i, 1)] = Pawn(WHITE, 'WP', 1)
             self.gameboard[(i, 6)] = Pawn(BLACK, 'BP', -1)
 
-        w_placer = self.generate_army(pool, 3235)
-        b_placer = self.generate_army(pool, 3235)
+        w_placer = self.generate_army(pool, (3035,3735),(20000,180000))
+        b_placer = self.generate_army(pool, (3035,3735),(20000,180000))
 
         for i in range(0, 8):
             self.gameboard[(i, 0)] = w_placer[i](WHITE, 'W' + w_placer[i].abbr)
