@@ -24,22 +24,23 @@ def receive(conn: socket.socket):
         # if there is a discrepency between the clients board and the game's resend
         # exepects client to respond
         if game.board_string() != local_board:
-            conn.send(json.dumps(game.board))
+            conn.send(json.dumps({'board': game.board_string()}))
 
         if not data:
             continue
 
         try:
             msg: dict = json.loads(data.decode('utf-8'))
-            if 'exit' in msg.keys():
-                print('exiting')
+            
+            if msg.get('exit') != None:
+                print('exiting connection')
                 loop = False
             
             if msg.get('query') != None:
                 # Game.check_move()
                 # game plays move -> returns board or None for invalid move
                 result = game.play(msg['query'])
-                if result == None:
+                if result == False:
                     conn.send(json.dumps({'invalid': 0}))
                 print(msg['query'])
             
