@@ -1,17 +1,18 @@
 import socket
 import json 
 import threading
+from server_game import SGame
 
 connections = {}
-game = None
+game = SGame()
 
 def receive(conn: socket.socket):
     global game
 
-    #
     loop = True
     # timeout for recv
     conn.settimeout(1.5)
+    local_board = ''
 
     while loop:
         # try within timeout
@@ -19,6 +20,11 @@ def receive(conn: socket.socket):
             data = conn.recv(4096)
         except socket.timeout:
             continue
+
+        # if there is a discrepency between the clients board and the game's resend
+        # exepects client to respond
+        if game.board_string() != local_board:
+            conn.send(json.dumps(game.board))
 
         if not data:
             continue
@@ -32,11 +38,14 @@ def receive(conn: socket.socket):
             if msg.get('query') != None:
                 # Game.check_move()
                 # game plays move -> returns board or None for invalid move
-                # result = game.play(msg['query'])
-                # if result == None:
-                #     conn.send(json.dumps({'invalid': 0}))
+                result = game.play(msg['query'])
+                if result == None:
+                    conn.send(json.dumps({'invalid': 0}))
                 print(msg['query'])
-                # rebroadcasts board to all player
+            
+            # update local board record 
+            if msg.get('board') != None:
+                local_board = msg['board']
 
             print(msg)
 

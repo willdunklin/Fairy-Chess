@@ -80,7 +80,6 @@ class Game:
             self.gameboard[(i, 6)] = Pawn(BLACK, 'BP', -1)
 
         w_placer = self.generate_army(self.pool, (3035,3735),(20000,180000))
-        b_placer = self.generate_army(self.pool, (3035,3735),(20000,180000))
 
         for i in range(0, 8):
             self.gameboard[(i, 0)] = w_placer[i](WHITE, 'W' + w_placer[i].abbr)
